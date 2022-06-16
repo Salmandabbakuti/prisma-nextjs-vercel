@@ -3,27 +3,27 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
 model Post {
-  id       Int     @id @default(autoincrement())
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
   content  String?
   title    String
-  authorId Int?
+  authorId String?
   author   User?   @relation(fields: [authorId], references: [id])
 }
 
 model Profile {
-  id     Int     @id @default(autoincrement())
+  id     String  @id @default(auto()) @map("_id") @db.ObjectId
   bio    String?
-  userId Int
+  userId String
   user   User    @relation(fields: [userId], references: [id])
 }
 
 model User {
-  id       Int       @id @default(autoincrement())
+  id       String    @id @default(auto()) @map("_id") @db.ObjectId
   email    String    @unique
   name     String?
   posts    Post[]
