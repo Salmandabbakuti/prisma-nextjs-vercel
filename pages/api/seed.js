@@ -1,44 +1,30 @@
-import prisma from '../../lib/prisma'
+import prisma from '../../lib/prisma';
 
 export default async (req, res) => {
   try {
-    await Promise.all([
-      prisma.profile.deleteMany({}),
-      prisma.post.deleteMany({}),
-    ])
-    await prisma.user.deleteMany({})
+    await prisma.$transaction([
+      prisma.user.deleteMany({}),
+      prisma.post.deleteMany({})
+    ]);
+    const newUser1 = await prisma.user.create({
+      data: seedUser1,
+    });
 
-    const createdUser = await prisma.user.create({
-      data: seedUser,
-    })
-
-    const createdUser2 = await prisma.user.create({
+    const newUser2 = await prisma.user.create({
       data: seedUser2,
-    })
+    });
 
-    res.status(201).json([createdUser, createdUser2])
+    res.status(201).json([newUser1, newUser2]);
   } catch (error) {
-    console.error(error)
-    return res.status(500).end()
+    console.error(error);
+    return res.status(500).end();
   }
-}
+};
 
-const seedUser = {
+const seedUser1 = {
   email: 'jane@prisma.io',
   name: 'Jane',
-  profiles: {
-    create: [
-      {
-        bio: 'Technical Writer',
-      },
-      {
-        bio: 'Health Enthusiast',
-      },
-      {
-        bio: 'Self Quantifier',
-      },
-    ],
-  },
+  bio: 'I am a fullstack developer',
   posts: {
     create: [
       {
@@ -53,24 +39,12 @@ const seedUser = {
       },
     ],
   },
-}
+};
 
 const seedUser2 = {
   email: 'toru@prisma.io',
   name: 'Toru Takemitsu',
-  profiles: {
-    create: [
-      {
-        bio: 'Composer',
-      },
-      {
-        bio: 'Musician',
-      },
-      {
-        bio: 'Writer',
-      },
-    ],
-  },
+  bio: 'Senior Frontend Engineer at Prisma',
   posts: {
     create: [
       {
@@ -87,4 +61,4 @@ const seedUser2 = {
       },
     ],
   },
-}
+};

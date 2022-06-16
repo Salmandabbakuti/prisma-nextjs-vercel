@@ -1,41 +1,41 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
-import { useCallback, useState } from 'react'
+import Head from 'next/head';
+import styles from '../styles/Home.module.css';
+import { useCallback, useState } from 'react';
 
 const fetchApi = (endpoint) => {
   return fetch(`/api/${endpoint}`).then((response) => {
     if (!response.ok) {
-      throw new Error('Network response was not ok')
+      throw new Error('Network response was not ok');
     }
-    return response.json()
-  })
-}
+    return response.json();
+  });
+};
 
 export default function Home() {
-  const [isLoadingPost, setLoadingPost] = useState(false)
-  const [apiResponse, setApiResponse] = useState(null)
-  const [apiError, setApiError] = useState(null)
+  const [isLoadingPost, setLoadingPost] = useState(false);
+  const [apiResponse, setApiResponse] = useState(null);
+  const [apiError, setApiError] = useState(null);
 
   const getApiCallback = useCallback(
     (endpoint) => async (e) => {
-      setLoadingPost(true)
-      setApiError(null)
+      setLoadingPost(true);
+      setApiError(null);
       try {
-        const response = await fetchApi(endpoint)
-        setApiResponse(response)
+        const response = await fetchApi(endpoint);
+        setApiResponse(response);
       } catch (e) {
-        setApiError(e)
-        console.error(e)
+        setApiError(e);
+        console.error(e);
       }
-      setLoadingPost(false)
+      setLoadingPost(false);
     },
     [],
-  )
+  );
 
-  const onGetStatus = useCallback(getApiCallback(''), [])
-  const onSeed = useCallback(getApiCallback('seed'), [])
-  const onGetUsers = useCallback(getApiCallback('users'), [])
-  const onGetPosts = useCallback(getApiCallback('posts'), [])
+  const onGetStatus = useCallback(getApiCallback(''), []);
+  const onSeed = useCallback(getApiCallback('seed'), []);
+  const onGetUsers = useCallback(getApiCallback('users'), []);
+  const onGetPosts = useCallback(getApiCallback('posts'), []);
 
   return (
     <div className={styles.container}>
@@ -55,7 +55,7 @@ export default function Home() {
             Seed data
           </button>
           <button onClick={onGetUsers} className={styles.apiButton}>
-            Load users with profiles
+            Load users
           </button>
           <button onClick={onGetPosts} className={styles.apiButton}>
             Load posts
@@ -65,9 +65,8 @@ export default function Home() {
           ></div>
         </div>
         <pre
-          className={`responseContainer ${styles.code} ${
-            apiResponse ? '' : styles.hidden
-          }`}
+          className={`responseContainer ${styles.code} ${apiResponse ? '' : styles.hidden
+            }`}
         >
           {apiResponse && JSON.stringify(apiResponse, null, 2)}
         </pre>
@@ -80,5 +79,5 @@ export default function Home() {
         <img src="/prisma.svg" alt="Prisma Logo" className={styles.logo} />
       </footer>
     </div>
-  )
+  );
 }
